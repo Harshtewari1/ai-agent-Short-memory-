@@ -3,10 +3,12 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  width:50vw;
+  width: 100vw;
+  margin: auto;
   background-color: #1e1e2f;
   font-family: "Inter", sans-serif;
   color: #fff;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.4);
 }
 
 /* Header */
@@ -19,7 +21,7 @@
 
 .chat-header h1 {
   margin: 0;
-  font-size: 1.2rem;
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
   font-weight: 600;
 }
 
@@ -31,6 +33,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
+  scroll-behavior: smooth;
 }
 
 .no-messages {
@@ -42,7 +45,8 @@
 /* Message Bubbles */
 .message {
   display: flex;
-  max-width: 70%;
+  max-width: 80%;
+  animation: fadeIn 0.3s ease-in-out;
 }
 
 .user-message {
@@ -69,10 +73,11 @@
   flex-direction: column;
   position: relative;
   word-wrap: break-word;
+  line-height: 1.4;
 }
 
 .message-text {
-  font-size: 0.95rem;
+  font-size: clamp(0.85rem, 1vw, 1rem);
 }
 
 .message-timestamp {
@@ -88,6 +93,7 @@
   padding: 0.8rem;
   background: #2a2a3d;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
+  gap: 0.6rem;
 }
 
 .input-field {
@@ -102,7 +108,6 @@
 }
 
 .send-button {
-  margin-left: 0.6rem;
   padding: 0.6rem 1.2rem;
   border: none;
   outline: none;
@@ -135,4 +140,38 @@
 
 .chat-messages::-webkit-scrollbar-track {
   background: transparent;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .chat-container {
+    width: 100%;
+    height: 100vh;
+    border-radius: 0;
+  }
+
+  .message {
+    max-width: 90%;
+  }
+
+  .input-field {
+    font-size: 0.9rem;
+  }
+
+  .send-button {
+    padding: 0.5rem 1rem;
+  }
 }

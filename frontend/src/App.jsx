@@ -1,67 +1,62 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react';
 import { io } from "socket.io-client";
-import './App.css'
+import './App.css';
 
 function App() {
-  const [socket, setSocket] = useState(null)
-  const [messages, setMessages] = useState([
-
-  ])
-  const [inputText, setInputText] = useState('')
+  const [socket, setSocket] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [inputText, setInputText] = useState('');
+  const messagesEndRef = useRef(null);
 
   const handleSendMessage = () => {
-    if (inputText.trim() === '') return
+    if (inputText.trim() === '') return;
 
     const userMessage = {
       id: Date.now(),
       text: inputText,
       timestamp: new Date().toLocaleTimeString(),
       sender: 'user'
-    }
+    };
 
-    setMessages(prevMessages => [...prevMessages, userMessage])
-
-    socket.emit('ai-message', inputText)
-
-
-    setInputText('')
-
-  }
-
-
+    setMessages(prevMessages => [...prevMessages, userMessage]);
+    socket.emit('ai-message', inputText);
+    setInputText('');
+  };
 
   const handleInputChange = (e) => {
-    setInputText(e.target.value)
-  }
+    setInputText(e.target.value);
+  };
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
-      handleSendMessage()
+      handleSendMessage();
     }
-  }
+  };
 
   useEffect(() => {
     let socketInstance = io("http://localhost:3000");
-    setSocket(socketInstance)
+    setSocket(socketInstance);
 
     socketInstance.on('ai-message-response', (response) => {
-
       const botMessage = {
         id: Date.now() + 1,
         text: response,
         timestamp: new Date().toLocaleTimeString(),
         sender: 'bot'
-      }
-
-      setMessages(prevMessages => [...prevMessages, botMessage])
-
-    })
+      };
+      setMessages(prevMessages => [...prevMessages, botMessage]);
+    });
   }, []);
+
+  // Auto scroll on new message
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   return (
     <div className="chat-container">
       <div className="chat-header">
-        <h1>Chat Interface</h1>
+        <h1>AI Chat Agent</h1>
       </div>
 
       <div className="chat-messages">
@@ -79,6 +74,7 @@ function App() {
             </div>
           ))
         )}
+        <div ref={messagesEndRef} />
       </div>
 
       <div className="chat-input">
@@ -99,7 +95,7 @@ function App() {
         </button>
       </div>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
